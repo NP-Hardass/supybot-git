@@ -44,7 +44,7 @@ import threading
 import time
 import traceback
 
-from pyshorteners.shortener import Shortener
+from pyshorteners.shorteners import Shortener
 
 # 'import git' is performed during plugin initialization.
 #
