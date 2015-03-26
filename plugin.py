@@ -44,6 +44,8 @@ import threading
 import time
 import traceback
 
+from pyshorteners.shortener import Shortener
+
 # 'import git' is performed during plugin initialization.
 #
 # The GitPython library has different APIs depending on the version installed.
@@ -192,7 +194,7 @@ class Repository(object):
             raise Exception("Unsupported API version: %d" % GIT_API_VERSION)
 
     @synchronized('lock')
-    def format_link(self, commit):
+    def format_link(self, commit, tinyurl):
         "Return a link to view a given commit, based on config setting."
         result = ''
         escaped = False
@@ -209,7 +211,10 @@ class Repository(object):
                 escaped = True
             else:
                 result += c
-        return result
+        if tinyurl:
+            return Shortener(TinyurlShortener).short(result)
+        else:
+            return result
 
     @synchronized('lock')
     def format_message(self, commit, format_str=None):
@@ -226,7 +231,8 @@ class Repository(object):
             'c': self.get_commit_id(commit)[0:7],
             'C': self.get_commit_id(commit),
             'e': commit.author.email,
-            'l': self.format_link(commit),
+            'l': self.format_link(commit,True),
+            'L': self.format_link(commit,False),
             'm': commit.message.split('\n')[0],
             'n': self.long_name,
             's': self.short_name,
