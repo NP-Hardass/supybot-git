@@ -212,7 +212,7 @@ class Repository(object):
             else:
                 result += c
         if tinyurl:
-            return Shortener('TinyurlShortener').short(result)
+            return Shortener('IsgdShortener').short(result)
         else:
             return result
 
